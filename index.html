@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script>
+	var iets = "";
+	window.onload = function() {
+		var data = {};
+        var s = new WebSocket("ws://192.168.69.2:5000/data");
+
+		s.onopen = function() {
+			s.send('hi');
+		};
+		s.onmessage = function(e) {
+			var lines = e.data.split('\n');
+
+			for (var i = 0; i < lines.length - 1; i++) {
+				var parts = lines[i].split(' ');
+				var d = parts[0], x = parseFloat(parts[1]), y = parseFloat(parts[2]);
+				if (!(d in data)) data[d] = [];
+				data[d].push([x,y]);
+			}
+
+			s.send('');
+		};
+	};
+	</script>
+</head>
+	<body>
+	<h3>Plot</h3>
+	<div id="holder" style="width:600px;height:300px"></div>
+	</body>
+</html>
